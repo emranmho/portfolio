@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { api } from "@/lib/api";
+import { CommandPaletteTrigger } from "@/components/CommandPaletteTrigger";
 
 const links = [
   { href: "/projects", label: "projects" },
@@ -39,6 +40,7 @@ export async function Nav() {
           >
             /docs
           </a>
+          <CommandPaletteTrigger />
           <span
             className="flex items-center gap-1.5 text-xs"
             title={up ? `API up · ${health?.gitSha}` : "API unreachable"}

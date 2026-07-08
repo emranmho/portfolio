@@ -418,8 +418,7 @@ Strictly **after Phase 5 ships**. Every item below is worth less than shipping t
 |---|---|---|
 | **curl-able homepage** | Developers screenshot this | Detect `curl` via User-Agent → ANSI-colored plain-text version of the site |
 | **`GET /api/resume`** | "My resume is an API endpoint" | Structured JSON + link to the PDF |
-| **Command palette** | Fits the terminal concept | Cmd+K navigation, terminal-styled |
-| **Uptime badge** | The API feeding the repo | `GET /api/badge/uptime` returns a shields-style SVG, embedded in this README |
+| **Command palette** *(built)* | Fits the terminal concept | Cmd+K navigation, terminal-styled |
 | **Changelog page** | Site documents its own evolution | `/changelog` fed by git tags/releases via the GitHub API |
 
 ### Moonshot
