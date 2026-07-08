@@ -81,6 +81,13 @@ export interface MetricsSummary {
   deploys: Deploy[];
 }
 
+export interface SearchResult {
+  type: "article" | "project";
+  slug: string;
+  title: string;
+  snippet: string;
+}
+
 async function get<T>(path: string, revalidate = 60): Promise<T> {
   const res = await fetch(`${API_BASE_URL}${path}`, {
     next: { revalidate },

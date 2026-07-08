@@ -133,4 +133,16 @@ public class EndpointTests(ApiFactory factory) : IClassFixture<ApiFactory>
         (await _client.GetAsync("/docs")).StatusCode.Should().Be(HttpStatusCode.OK);
         (await _client.GetAsync("/openapi/v1.json")).StatusCode.Should().Be(HttpStatusCode.OK);
     }
+
+    [Fact]
+    public async Task Openapi_document_lists_the_live_feed_route()
+    {
+        // Full-duplex SSE isn't exercisable through WebApplicationFactory's in-memory
+        // TestServer (verified manually against a running instance instead — see
+        // LiveRequestFeedTests for the publish/subscribe behavior itself); this at
+        // least proves the endpoint is wired into routing.
+        var openapi = await _client.GetFromJsonAsync<JsonElement>("/openapi/v1.json");
+
+        openapi.GetProperty("paths").TryGetProperty("/api/live/requests", out _).Should().BeTrue();
+    }
 }

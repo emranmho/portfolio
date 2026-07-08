@@ -403,13 +403,14 @@ Strictly **after Phase 5 ships**. Every item below is worth less than shipping t
 
 | Idea | What it demonstrates | Sketch |
 |---|---|---|
-| **Full-text search** | Search architecture without over-tooling | `GET /api/search?q=` over articles/projects via **SQLite FTS5** — deliberately not Elasticsearch; fits the trade-offs philosophy |
-| **Live request feed** | Real-time (SignalR/SSE) — backs the resume claim | Status page streams anonymized live traffic: `GET /api/projects · 200 · 41ms` |
+| **Full-text search** *(built)* | Search architecture without over-tooling | `GET /api/search?q=` over articles/projects via **SQLite FTS5** — deliberately not Elasticsearch; fits the trade-offs philosophy |
+| **Live request feed** *(built)* | Real-time (SignalR/SSE) — backs the resume claim | Status page streams anonymized live traffic via `GET /api/live/requests` (SSE): `GET /api/projects · 200 · 41ms` |
 | **Load-test writeup** | Performance engineering, honest limits | Run **k6** against the API; publish RPS, p99 under load, and where SQLite taps out as an article with graphs |
-| **API versioning demo** | Evolution strategy | `/api/v2/...` endpoint showing a versioning approach, explained in `/docs` |
+| **API versioning demo** *(built)* | Evolution strategy | `GET /api/v2/projects` — paginated envelope vs. v1's bare array, explained in `/docs` |
 | **Idempotency demo** | Distributed-systems hygiene | A playground POST honoring `Idempotency-Key` — retry it, get the same result, see why |
-| **Guestbook** | First real write path: validation, moderation, abuse handling | Rate-limited `POST /api/guestbook`; gives the idempotency demo something real to attach to |
 | **Self-hosted analytics** | Ops + privacy stance | **Umami/Plausible** as another Dokploy app; real visitor data, no Google |
+
+*Three of seven above were built ahead of the "post-launch only" rule — pure code, no infra dependency, safe to ship whenever Phase 2 lands. Guestbook and its idempotency demo were built then pulled back out; load-test writeup and self-hosted analytics still need a deployed target and stay blocked.*
 
 ### Personality touches
 

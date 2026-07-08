@@ -48,3 +48,10 @@ public sealed record MetricsSummaryDto(
     double ErrorRatePercent,
     IReadOnlyList<EndpointMetricsDto> Endpoints,
     IReadOnlyList<DeployDto> Deploys);
+
+/// <summary>Snippet wraps matches in &lt;mark&gt; tags; Type is "article" or "project".</summary>
+public sealed record SearchResultDto(
+    string Type,
+    string Slug,
+    string Title,
+    string Snippet);

@@ -19,7 +19,7 @@ function JsonNode({ value, depth }: { value: Json; depth: number }) {
 
   if (value === null) return <span className="text-text-dim">null</span>;
   if (typeof value === "string")
-    return <span className="text-accent">&quot;{value}&quot;</span>;
+    return <span className="break-all text-accent">&quot;{value}&quot;</span>;
   if (typeof value === "number") return <span className="text-warn">{value}</span>;
   if (typeof value === "boolean")
     return <span className="text-warn">{String(value)}</span>;

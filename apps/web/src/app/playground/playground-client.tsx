@@ -18,8 +18,10 @@ const ENDPOINTS: Endpoint[] = [
   { method: "GET", path: "/api/health", note: "liveness + version + git SHA" },
   { method: "GET", path: "/api/whoami", note: "identity payload (the hero terminal)" },
   { method: "GET", path: "/api/projects", note: "project list — try ?stack=dotnet" },
+  { method: "GET", path: "/api/v2/projects", note: "v2: paginated envelope — versioning demo" },
   { method: "GET", path: "/api/articles", note: "article metadata, date desc" },
   { method: "GET", path: "/api/articles/hello-world", note: "CQRS/MediatR demo #1" },
+  { method: "GET", path: "/api/search?q=sqlite", note: "full-text search — SQLite FTS5" },
   { method: "GET", path: "/api/metrics", note: "CQRS/MediatR demo #2 — real observability" },
   { method: "POST", path: "/api/auth/token", note: "issues a 15-min demo JWT" },
   { method: "GET", path: "/api/secret", note: "JWT-protected — 401 is the demo" },
@@ -197,7 +199,7 @@ export function PlaygroundClient() {
   }
 
   return (
-    <div className="mt-10 grid gap-8 lg:grid-cols-[380px_1fr]">
+    <div className="mt-10 grid gap-8 lg:grid-cols-[380px_minmax(0,1fr)]">
       {/* ── Left: endpoint picker + demos ── */}
       <div>
         <h2 className="mb-3 font-mono text-sm font-semibold text-text-dim">
@@ -207,9 +209,11 @@ export function PlaygroundClient() {
           {ENDPOINTS.map((e) => (
             <li key={`${e.method} ${e.path}`} className="border-b border-border last:border-b-0">
               <button
-                onClick={() => handleRun(e)}
-                disabled={running}
-                className={`flex w-full cursor-pointer items-baseline gap-2 px-3 py-2.5 text-left font-mono text-sm transition-colors hover:bg-bg disabled:opacity-50 ${
+                onClick={() => {
+                  setSelected(e);
+                  setResult(null);
+                }}
+                className={`flex w-full cursor-pointer items-baseline gap-2 px-3 py-2.5 text-left font-mono text-sm transition-colors hover:bg-bg ${
                   selected.path === e.path && selected.method === e.method
                     ? "bg-bg"
                     : ""

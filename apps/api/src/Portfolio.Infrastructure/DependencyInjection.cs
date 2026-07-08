@@ -6,6 +6,7 @@ using Portfolio.Infrastructure.Content;
 using Portfolio.Infrastructure.Metrics;
 using Portfolio.Infrastructure.Persistence;
 using Portfolio.Infrastructure.Readers;
+using Portfolio.Infrastructure.Search;
 
 namespace Portfolio.Infrastructure;
 
@@ -24,6 +25,7 @@ public static class DependencyInjection
         services.AddScoped<MarkdownContentIngester>();
         services.AddScoped<IProjectReader, EfProjectReader>();
         services.AddScoped<IArticleReader, EfArticleReader>();
+        services.AddScoped<ISearchService, SqliteFtsSearchService>();
         services.AddSingleton<IWhoamiReader>(new WhoamiFileReader(contentRoot));
         services.AddSingleton<IMetricsStore, SqliteMetricsStore>();
         services.AddHostedService<MetricsFlushService>();

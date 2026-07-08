@@ -2,7 +2,9 @@ using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Portfolio.Api.Auth;
 using Portfolio.Api.Endpoints;
+using Portfolio.Api.Live;
 using Portfolio.Api.Middleware;
+using Portfolio.Application.Abstractions;
 using Portfolio.Application.Features.Articles.GetArticleBySlug;
 using Portfolio.Infrastructure;
 using Portfolio.Infrastructure.Content;
@@ -34,6 +36,7 @@ builder.Services.AddProblemDetails();
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetArticleBySlugQuery>());
 builder.Services.AddInfrastructure(builder.Configuration, builder.Environment.ContentRootPath);
+builder.Services.AddSingleton<LiveRequestFeed>();
 
 // --- Demo JWT (auth as a feature, not security — see README §1.5)
 var jwtOptions = JwtDemoOptions.From(builder.Configuration, builder.Environment);
@@ -65,7 +68,10 @@ builder.Services.AddRateLimiter(options =>
     options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(ctx =>
     {
         var path = ctx.Request.Path;
-        if (!path.StartsWithSegments("/api") || path.StartsWithSegments("/api/health"))
+        // /api/live excluded: SSE holds one long-lived request; reconnects shouldn't eat quota.
+        if (!path.StartsWithSegments("/api")
+            || path.StartsWithSegments("/api/health")
+            || path.StartsWithSegments("/api/live"))
             return RateLimitPartition.GetNoLimiter("unlimited");
 
         var ip = ctx.Connection.RemoteIpAddress?.ToString() ?? "unknown";
@@ -91,13 +97,33 @@ builder.Services.AddRateLimiter(options =>
 var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
 builder.Services.AddCors(o => o.AddDefaultPolicy(p =>
     p.WithOrigins(allowedOrigins).AllowAnyHeader().AllowAnyMethod()
-     .WithExposedHeaders("Retry-After", "X-RateLimit-Limit", "X-RateLimit-Window")));
+     .WithExposedHeaders("Retry-After", "X-RateLimit-Limit", "X-RateLimit-Window", "X-Api-Version")));
 
 var app = builder.Build();
 
 // --- Pipeline
 app.UseExceptionHandler();
 app.UseStatusCodePages();
+
+// One line per request: method, path, status, elapsed ms. Own logger category
+// (not "Microsoft.AspNetCore"), so it survives the Warning-level override above.
+// Demotes client-disconnect cancellations (e.g. closing an open SSE stream) from
+// Error to Debug — those aren't application failures, just a closed connection.
+app.UseSerilogRequestLogging(options =>
+{
+    options.GetLevel = (httpContext, elapsed, ex) => ex switch
+    {
+        OperationCanceledException => LogEventLevel.Debug,
+        not null => LogEventLevel.Error,
+        _ when httpContext.Response.StatusCode > 499 => LogEventLevel.Error,
+        _ => LogEventLevel.Information,
+    };
+});
+
+// CORS must run before rate limiting/auth: a browser's CORS preflight (OPTIONS,
+// sent whenever a request carries a non-simple header or method) needs to
+// succeed unconditionally, or the real request never gets sent.
+app.UseCors();
 
 app.UseMiddleware<MetricsMiddleware>();
 
@@ -113,7 +139,6 @@ app.Use(async (context, next) =>
 });
 
 app.UseRateLimiter();
-app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -124,6 +149,9 @@ app.MapProjectEndpoints();
 app.MapArticleEndpoints();
 app.MapMetricsEndpoints();
 app.MapAuthEndpoints();
+app.MapSearchEndpoints();
+app.MapLiveFeedEndpoints();
+app.MapV2Endpoints();
 
 app.MapOpenApi();
 app.MapScalarApiReference("/docs", options => options
@@ -140,6 +168,9 @@ await using (var scope = app.Services.CreateAsyncScope())
     var ingester = scope.ServiceProvider.GetRequiredService<MarkdownContentIngester>();
     await ingester.IngestAsync(contentRoot);
     await ingester.RecordDeployAsync(app.Configuration["GIT_SHA"] ?? "dev");
+
+    // Content is in the database now — (re)build the FTS5 index from it.
+    await scope.ServiceProvider.GetRequiredService<ISearchService>().RebuildIndexAsync(CancellationToken.None);
 }
 
 app.Run();

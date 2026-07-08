@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { PUBLIC_API_BASE_URL, type MetricsSummary } from "@/lib/api";
 import { MetricChip } from "@/components/MetricChip";
 import { formatCount, formatDate, formatMs, formatUptime } from "@/lib/format";
+import { LiveFeedPanel } from "./live-feed-panel";
 
 const REFRESH_MS = 30_000;
 
@@ -132,6 +133,8 @@ export function StatusClient({ initial }: { initial: MetricsSummary | null }) {
           traffic.
         </p>
       </section>
+
+      <LiveFeedPanel />
 
       {/* Deploy history */}
       <section className="mt-12">
