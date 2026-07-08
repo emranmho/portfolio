@@ -1,0 +1,12 @@
+{
+  "name": "Emran",
+  "role": "Backend Engineer — .NET",
+  "location": "Bangladesh",
+  "site": "https://emran.blog",
+  "api": "https://api.emran.blog",
+  "docs": "https://api.emran.blog/docs",
+  "github": "https://github.com/emran2300",
+  "email": "emran2300@gmail.com",
+  "focus": [".NET", "C#", "distributed systems", "observability", "Go (learning)"],
+  "message": "The backend is the portfolio. Everything on this site comes from this API — poke around: /docs"
+}

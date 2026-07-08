@@ -1,0 +1,45 @@
+# .NET
+bin/
+obj/
+artifacts/
+publish/
+TestResults/
+*.user
+*.suo
+*.binlog
+*.trx
+.vs/
+portfolio.db
+portfolio.db-*
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+dist/
+*.tsbuildinfo
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Env & secrets
+.env
+.env.local
+.env.*.local
+appsettings.*.local.json
+*.pfx
+*.key
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs / temp
+logs/
+*.log
+*.tmp
