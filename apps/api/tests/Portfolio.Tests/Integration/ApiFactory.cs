@@ -48,6 +48,9 @@ public class ApiFactory : WebApplicationFactory<Program>
         File.WriteAllText(Path.Combine(root, "whoami.json"),
             """{ "name": "Test Emran", "role": "Backend Engineer" }""");
 
+        File.WriteAllText(Path.Combine(root, "resume.json"),
+            """{ "name": "Test Emran", "role": "Backend Engineer", "pdf": "https://example.com/resume.pdf" }""");
+
         File.WriteAllText(Path.Combine(root, "articles", "test-article.md"),
             """
             ---

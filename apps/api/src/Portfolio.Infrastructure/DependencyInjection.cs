@@ -27,6 +27,7 @@ public static class DependencyInjection
         services.AddScoped<IArticleReader, EfArticleReader>();
         services.AddScoped<ISearchService, SqliteFtsSearchService>();
         services.AddSingleton<IWhoamiReader>(new WhoamiFileReader(contentRoot));
+        services.AddSingleton<IResumeReader>(new ResumeFileReader(contentRoot));
         services.AddSingleton<IMetricsStore, SqliteMetricsStore>();
         services.AddHostedService<MetricsFlushService>();
         services.AddSingleton(new ContentRootHolder(contentRoot));

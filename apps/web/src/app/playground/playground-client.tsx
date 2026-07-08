@@ -17,6 +17,7 @@ interface Endpoint {
 const ENDPOINTS: Endpoint[] = [
   { method: "GET", path: "/api/health", note: "liveness + version + git SHA" },
   { method: "GET", path: "/api/whoami", note: "identity payload (the hero terminal)" },
+  { method: "GET", path: "/api/resume", note: "structured resume JSON + PDF link" },
   { method: "GET", path: "/api/projects", note: "project list — try ?stack=dotnet" },
   { method: "GET", path: "/api/v2/projects", note: "v2: paginated envelope — versioning demo" },
   { method: "GET", path: "/api/articles", note: "article metadata, date desc" },

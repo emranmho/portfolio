@@ -33,6 +33,18 @@ public class EndpointTests(ApiFactory factory) : IClassFixture<ApiFactory>
     }
 
     [Fact]
+    public async Task Resume_serves_content_file_verbatim()
+    {
+        var response = await _client.GetAsync("/api/resume");
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        response.Content.Headers.ContentType!.MediaType.Should().Be("application/json");
+        var body = await response.Content.ReadFromJsonAsync<JsonElement>();
+        body.GetProperty("name").GetString().Should().Be("Test Emran");
+        body.GetProperty("pdf").GetString().Should().Be("https://example.com/resume.pdf");
+    }
+
+    [Fact]
     public async Task Projects_list_returns_ingested_projects()
     {
         var projects = await _client.GetFromJsonAsync<JsonElement>("/api/projects");

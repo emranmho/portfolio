@@ -1,0 +1,30 @@
+{
+  "name": "Mohammodullah Emran",
+  "role": "Software Engineer — SRE",
+  "location": "Bangladesh",
+  "email": "emran2300@gmail.com",
+  "github": "https://github.com/emranmho",
+  "linkedin": "https://www.linkedin.com/in/emranmho",
+  "pdf": "https://emran.blog/resume.pdf",
+  "summary": "Backend engineer working primarily in .NET / C#, with a growing Go habit. Cares about systems that can be observed, deployed safely, and explained honestly.",
+  "experience": [
+    {
+      "role": "Backend Engineer (.NET)",
+      "company": "TODO: Company name",
+      "period": "TODO: 2024 — present",
+      "highlights": [
+        "TODO: Cut SQL Server query time 40% — real query plans, before/after (see the war-story article).",
+        "TODO: One more measurable outcome. Numbers over adjectives."
+      ]
+    },
+    {
+      "role": "Software Engineer",
+      "company": "TODO: Previous company",
+      "period": "TODO: 2021 — 2024",
+      "highlights": [
+        "TODO: Migrated .NET Framework → Core with 99.9% uptime — strategy, rollback plan, what broke."
+      ]
+    }
+  ],
+  "skills": [".NET", "C#", "ASP.NET Core", "EF Core", "SQL Server", "SQLite", "Docker", "CI/CD", "Go (learning)"]
+}

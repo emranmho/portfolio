@@ -145,6 +145,7 @@ app.UseAuthorization();
 // --- Endpoints
 app.MapHealthEndpoints();
 app.MapWhoamiEndpoints();
+app.MapResumeEndpoints();
 app.MapProjectEndpoints();
 app.MapArticleEndpoints();
 app.MapMetricsEndpoints();
