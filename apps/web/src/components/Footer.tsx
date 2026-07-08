@@ -10,6 +10,9 @@ export function Footer() {
           <span className="text-text">Next.js</span>
         </span>
         <div className="ml-auto flex gap-5">
+          <a href="/feed.xml" className="hover:text-accent">
+            rss
+          </a>
           <a
             href="https://github.com/emranmho/portfolio"
             target="_blank"

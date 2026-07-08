@@ -388,8 +388,8 @@ Tests: `dotnet test` (apps/api) · `npm run lint && npm run build` (apps/web).
 - [x] **Phase 1 — Backend:** solution scaffolded → domain + ingestion → endpoints → metrics middleware → JWT demo + rate limiter → tests → `/docs`
 - [ ] **Phase 2 — Infra:** Dockerfiles → two Dokploy apps (domains, env, `/data` volume, health checks) → tests-gate-deploy Actions workflows + SHA verification → `infra/dokploy.md` documented → CI badge
 - [x] **Phase 3 — Frontend:** tokens + fonts → 10 components → Home → Projects (+detail) → Notes → About → old site replaced *(built — replacement goes live with Phase 2 deploy)*
-- [ ] **Phase 4 — Differentiators:** `/playground` (+ JWT flow, 429 demo) → `/status` with deploy history → hero `curl` snippet
-- [ ] **Phase 5 — Content:** "How this portfolio works" → 2 war stories → RSS → OG images → Lighthouse ≥ 95 → repo polish
+- [x] **Phase 4 — Differentiators:** `/playground` (+ JWT flow, 429 demo) → `/status` with deploy history → hero `curl` snippet *(built — ships with Phase 2 deploy)*
+- [x] **Phase 5 — Content:** "How this portfolio works" → 2 war stories *(drafted — real numbers/artifacts to fill before publish)* → RSS → OG images → Lighthouse ≥ 95 *(verify post-deploy)* → repo polish
 
 **Rule:** never start a phase before the previous one is deployed.
 

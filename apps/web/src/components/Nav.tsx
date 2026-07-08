@@ -3,6 +3,8 @@ import { api } from "@/lib/api";
 
 const links = [
   { href: "/projects", label: "projects" },
+  { href: "/playground", label: "playground" },
+  { href: "/status", label: "status" },
   { href: "/notes", label: "notes" },
   { href: "/about", label: "about" },
 ];

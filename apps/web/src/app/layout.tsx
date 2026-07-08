@@ -24,6 +24,16 @@ export const metadata: Metadata = {
   },
   description:
     "The backend is the portfolio. A thin client of a real, observable, production-deployed .NET API.",
+  alternates: {
+    types: {
+      "application/rss+xml": "/feed.xml",
+    },
+  },
+  openGraph: {
+    siteName: "emran.blog",
+    type: "website",
+    url: "https://emran.blog",
+  },
 };
 
 export default function RootLayout({

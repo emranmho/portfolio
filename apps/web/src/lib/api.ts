@@ -4,6 +4,11 @@
 
 const API_BASE_URL = process.env.API_BASE_URL ?? "http://localhost:8080";
 
+// Browser-side base URL (playground, status auto-refresh). NEXT_PUBLIC_ vars
+// are inlined at build time; server-only API_BASE_URL never reaches the client.
+export const PUBLIC_API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
+
 export interface Whoami {
   name: string;
   role: string;
