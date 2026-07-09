@@ -44,8 +44,12 @@ Cors__AllowedOrigins__0=https://emran.blog
 Env vars:
 
 ```
-API_BASE_URL=http://<portfolio-api container name on the Dokploy network>:8080
+API_BASE_URL=https://api.emran.blog
 ```
+
+(Server-side fetches go over the public domain rather than Dokploy's internal network —
+simpler than looking up the api container's internal name, and the latency cost is
+negligible.)
 
 ## Deploy trigger (used by CI)
 
