@@ -55,7 +55,7 @@ export default function OpenGraphImage() {
             }}
           >
             <div style={{ display: "flex", fontSize: 34, color: "#4ADE80" }}>
-              $ curl api.emran.blog/api/whoami
+              $ curl https://api.emran.blog/api/whoami
             </div>
             <div style={{ display: "flex", marginTop: 36, fontSize: 64, fontWeight: 700, color: "#E6EAE8" }}>
               Mohammodullah Emran

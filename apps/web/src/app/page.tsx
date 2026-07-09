@@ -58,7 +58,7 @@ export default async function HomePage() {
         </div>
         <div>
           <TerminalWindow
-            command="curl api.emran.blog/api/whoami"
+            command="curl https://api.emran.blog/api/whoami"
             output={
               whoami
                 ? JSON.stringify(whoami, null, 2)
@@ -68,9 +68,9 @@ export default async function HomePage() {
           {/* The site invites you to leave the browser. */}
           <div className="mt-3 flex items-center justify-between gap-3 border border-border bg-surface px-4 py-2.5">
             <code className="min-w-0 flex-1 truncate font-mono text-sm text-text-dim">
-              curl api.emran.blog/api/whoami
+              curl https://api.emran.blog/api/whoami
             </code>
-            <CopyButton text="curl api.emran.blog/api/whoami" />
+            <CopyButton text="curl https://api.emran.blog/api/whoami" />
           </div>
         </div>
       </section>

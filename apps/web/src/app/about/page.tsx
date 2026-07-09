@@ -144,8 +144,7 @@ export default function AboutPage() {
           .
         </p>
         <p className="mt-4 border border-border bg-surface p-3 font-mono text-sm text-text-dim">
-          <span className="text-accent">$</span> curl {api.baseUrl.replace("http://", "").replace("https://", "")}
-          /api/whoami
+          <span className="text-accent">$</span> curl {api.baseUrl}/api/whoami
         </p>
       </section>
 
