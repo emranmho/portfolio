@@ -1,6 +1,7 @@
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.EntityFrameworkCore;
 using Portfolio.Api.Auth;
 using Portfolio.Api.Endpoints;
 using Portfolio.Api.Live;
@@ -177,7 +178,7 @@ app.MapScalarApiReference("/docs", options => options
 await using (var scope = app.Services.CreateAsyncScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<PortfolioDbContext>();
-    await db.Database.EnsureCreatedAsync();
+    await db.Database.MigrateAsync();
 
     var contentRoot = scope.ServiceProvider.GetRequiredService<ContentRootHolder>().Path;
     var ingester = scope.ServiceProvider.GetRequiredService<MarkdownContentIngester>();

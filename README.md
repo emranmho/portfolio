@@ -76,7 +76,7 @@ Three rules drive every decision in this repo:
 | Layer | Choice | Why |
 |---|---|---|
 | Backend | **.NET 10** (LTS, supported to Nov 2028), C#, Minimal APIs | Primary professional stack; LTS over STS for a long-lived personal site |
-| ORM / DB | **EF Core 10 + SQLite** | Zero-ops, file-backed, more than enough for portfolio traffic |
+| ORM / DB | **EF Core 10 + SQLite**, schema via **EF Core Migrations** | Zero-ops, file-backed, more than enough for portfolio traffic |
 | CQRS (demo) | **MediatR** | Used on exactly 2 endpoints as a pattern demonstration |
 | Markdown | **Markdig** (+ YAML frontmatter) | Articles as version-controlled `.md` files |
 | Logging | **Serilog** (console sink, structured JSON) | Matches production experience; grep-able via `docker logs` |
@@ -121,7 +121,7 @@ portfolio/
 │       └── package.json
 ├── content/                          # publishing = git push
 │   ├── articles/                         # *.md with YAML frontmatter
-│   ├── projects/                         # *.json project definitions
+│   ├── projects/                         # *.md with YAML frontmatter
 │   └── whoami.json                       # the /api/whoami payload
 ├── infra/
 │   ├── docker-compose.local.yml          # local prod-shaped run only (Dokploy owns prod)
@@ -391,6 +391,20 @@ docker compose -f infra/docker-compose.local.yml up --build
 ```
 
 Tests: `dotnet test` (apps/api) · `npm run lint && npm run build` (apps/web).
+
+### Schema changes (EF Core Migrations)
+
+Startup applies pending migrations automatically (`Database.MigrateAsync()` in `Program.cs`) — no manual `dotnet ef database update` step for deploys. Adding a column/table locally:
+
+```bash
+cd apps/api
+dotnet ef migrations add <Name> \
+  --project src/Portfolio.Infrastructure \
+  --startup-project src/Portfolio.Api \
+  --output-dir Persistence/Migrations
+```
+
+Commit the generated files under `Persistence/Migrations/`; the next deploy applies them on boot.
 
 ---
 
