@@ -47,13 +47,22 @@ Env vars:
 API_BASE_URL=http://<portfolio-api container name on the Dokploy network>:8080
 ```
 
-## Deploy webhooks (used by CI)
+## Deploy trigger (used by CI)
 
-In each Dokploy app: Settings → Webhooks → generate a deploy webhook URL. Store them as
-GitHub repo secrets:
+CI triggers deploys via Dokploy's API (`POST /api/application.deploy`), not the
+Webhooks-tab URL — that URL expects a GitHub-shaped push payload (`ref: refs/heads/main`)
+to determine the branch, which a bare CI curl can't supply, so it fails with
+`{"message":"Branch Not Match"}`.
 
-- `DOKPLOY_WEBHOOK_API` → portfolio-api's webhook URL done
-- `DOKPLOY_WEBHOOK_WEB` → portfolio-web's webhook URL
+Setup:
+
+1. Dokploy → profile/settings → API/CLI section → generate an API token.
+2. Get each app's `applicationId`: `curl -s https://vps.emran.blog/api/project.all -H "x-api-key: <token>" | jq`.
+3. GitHub repo secrets:
+   - `DOKPLOY_API_URL` → `vps.emran.blog` (panel domain, no `https://`)
+   - `DOKPLOY_API_TOKEN` → the token from step 1
+   - `DOKPLOY_APP_ID_API` → portfolio-api's `applicationId`
+   - `DOKPLOY_APP_ID_WEB` → portfolio-web's `applicationId`
 
 `JWT_DEMO_KEY` lives only in Dokploy's env config, never in GitHub.
 
