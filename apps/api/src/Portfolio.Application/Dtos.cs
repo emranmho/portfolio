@@ -5,6 +5,7 @@ public sealed record ProjectDto(
     string Name,
     string Summary,
     string Description,
+    string DescriptionHtml,
     IReadOnlyList<string> Stack,
     string? RepoUrl,
     string? LiveUrl,

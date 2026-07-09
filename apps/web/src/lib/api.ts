@@ -35,6 +35,7 @@ export interface Project {
   name: string;
   summary: string;
   description: string;
+  descriptionHtml: string;
   stack: string[];
   repoUrl: string | null;
   liveUrl: string | null;

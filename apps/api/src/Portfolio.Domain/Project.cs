@@ -7,6 +7,7 @@ public sealed class Project
     public required string Name { get; set; }
     public required string Summary { get; set; }
     public string Description { get; set; } = "";
+    public string DescriptionHtml { get; set; } = "";
     public List<string> Stack { get; set; } = [];
     public string? RepoUrl { get; set; }
     public string? LiveUrl { get; set; }

@@ -1,12 +1,12 @@
 {
-  "name": "Emran",
-  "role": "Backend Engineer — .NET",
+  "name": "Mohammodullah",
+  "role": "Software Engineer (Site Reliability)",
   "location": "Bangladesh",
   "site": "https://emran.blog",
   "api": "https://api.emran.blog",
   "docs": "https://api.emran.blog/docs",
   "github": "https://github.com/emranmho",
-  "email": "emran2300@gmail.com",
-  "focus": [".NET", "C#", "distributed systems", "observability", "Go (learning)"],
+  "email": "mhoemran@gmail.com",
+  "focus": [".NET", "C#", "distributed systems", "Agentic AI (explore)", "Go (learning)"],
   "message": "The backend is the portfolio. Everything on this site comes from this API — poke around: /docs"
 }

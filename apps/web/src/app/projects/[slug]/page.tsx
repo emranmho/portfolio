@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { api, ApiError, type Project } from "@/lib/api";
 import { Badge } from "@/components/Badge";
 import { Button } from "@/components/Button";
+import { highlightArticleHtml } from "@/lib/highlight";
 
 async function getProject(slug: string): Promise<Project | null> {
   try {
@@ -43,6 +44,8 @@ export default async function ProjectDetailPage({
     );
   }
 
+  const descriptionHtml = await highlightArticleHtml(project.descriptionHtml);
+
   return (
     <article className="py-12">
       <Link
@@ -77,7 +80,10 @@ export default async function ProjectDetailPage({
         <h2 className="font-mono text-lg font-semibold">
           <span className="text-text-dim">## </span>What & why
         </h2>
-        <p className="mt-3 leading-relaxed">{project.description}</p>
+        <div
+          className="prose mt-3 max-w-none"
+          dangerouslySetInnerHTML={{ __html: descriptionHtml }}
+        />
       </section>
 
       <div className="mt-10 flex flex-wrap gap-3">

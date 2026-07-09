@@ -31,5 +31,5 @@ public sealed class EfProjectReader(PortfolioDbContext db) : IProjectReader
     }
 
     private static ProjectDto ToDto(Project p) =>
-        new(p.Slug, p.Name, p.Summary, p.Description, p.Stack, p.RepoUrl, p.LiveUrl, p.Featured);
+        new(p.Slug, p.Name, p.Summary, p.Description, p.DescriptionHtml, p.Stack, p.RepoUrl, p.LiveUrl, p.Featured);
 }

@@ -11,6 +11,17 @@ public sealed class ArticleFrontmatter
     public List<string>? Tags { get; set; }
 }
 
+public sealed class ProjectFrontmatter
+{
+    public string? Name { get; set; }
+    public string? Summary { get; set; }
+    public List<string>? Stack { get; set; }
+    public string? RepoUrl { get; set; }
+    public string? LiveUrl { get; set; }
+    public bool Featured { get; set; }
+    public int Order { get; set; }
+}
+
 public static class FrontmatterParser
 {
     private static readonly IDeserializer Deserializer = new DeserializerBuilder()
@@ -22,22 +33,22 @@ public static class FrontmatterParser
     /// Splits a markdown document into YAML frontmatter (between leading "---" fences)
     /// and the markdown body. Returns an empty frontmatter when no fence is present.
     /// </summary>
-    public static (ArticleFrontmatter Frontmatter, string Body) Parse(string markdown)
+    public static (T Frontmatter, string Body) Parse<T>(string markdown) where T : new()
     {
         var text = markdown.ReplaceLineEndings("\n");
 
         if (!text.StartsWith("---\n", StringComparison.Ordinal))
-            return (new ArticleFrontmatter(), text);
+            return (new T(), text);
 
         var end = text.IndexOf("\n---", 4, StringComparison.Ordinal);
         if (end < 0)
-            return (new ArticleFrontmatter(), text);
+            return (new T(), text);
 
         var yaml = text[4..end];
         var bodyStart = text.IndexOf('\n', end + 1);
         var body = bodyStart < 0 ? "" : text[(bodyStart + 1)..];
 
-        var frontmatter = Deserializer.Deserialize<ArticleFrontmatter>(yaml) ?? new ArticleFrontmatter();
+        var frontmatter = Deserializer.Deserialize<T>(yaml) ?? new T();
         return (frontmatter, body);
     }
 }

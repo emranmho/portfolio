@@ -21,7 +21,7 @@ public class FrontmatterParserTests
             Body text.
             """;
 
-        var (fm, body) = FrontmatterParser.Parse(markdown);
+        var (fm, body) = FrontmatterParser.Parse<ArticleFrontmatter>(markdown);
 
         fm.Title.Should().Be("My Post");
         fm.Summary.Should().Be("A summary.");
@@ -34,7 +34,7 @@ public class FrontmatterParserTests
     [Fact]
     public void Document_without_frontmatter_returns_full_body()
     {
-        var (fm, body) = FrontmatterParser.Parse("# Just markdown\n\nNo fences here.");
+        var (fm, body) = FrontmatterParser.Parse<ArticleFrontmatter>("# Just markdown\n\nNo fences here.");
 
         fm.Title.Should().BeNull();
         body.Should().StartWith("# Just markdown");
@@ -43,7 +43,7 @@ public class FrontmatterParserTests
     [Fact]
     public void Unclosed_fence_is_treated_as_body()
     {
-        var (fm, body) = FrontmatterParser.Parse("---\ntitle: broken");
+        var (fm, body) = FrontmatterParser.Parse<ArticleFrontmatter>("---\ntitle: broken");
 
         fm.Title.Should().BeNull();
         body.Should().Contain("title: broken");
@@ -52,7 +52,7 @@ public class FrontmatterParserTests
     [Fact]
     public void Unknown_frontmatter_keys_are_ignored()
     {
-        var (fm, _) = FrontmatterParser.Parse("---\ntitle: ok\nnotAField: whatever\n---\nbody");
+        var (fm, _) = FrontmatterParser.Parse<ArticleFrontmatter>("---\ntitle: ok\nnotAField: whatever\n---\nbody");
         fm.Title.Should().Be("ok");
     }
 }

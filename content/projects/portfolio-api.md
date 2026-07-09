@@ -1,0 +1,11 @@
+---
+name: "emran.blog API"
+summary: "The .NET 10 API serving this site — content ingestion from git, custom metrics middleware, demo JWT flow, and honest trade-offs."
+stack: [dotnet, csharp, efcore, sqlite, docker]
+repoUrl: "https://github.com/emranmho/portfolio"
+liveUrl: "https://api.emran.blog/docs"
+featured: true
+order: 1
+---
+
+A production-deployed Minimal API where the architecture is the exhibit: layered projects with compile-enforced dependency rules, CQRS via MediatR on exactly two endpoints as a pattern demo, SQLite-backed metrics collected by custom middleware, and a rate-limited public playground. Deployed by Dokploy behind Traefik, gated by GitHub Actions.

@@ -65,29 +65,30 @@ public class ApiFactory : WebApplicationFactory<Program>
             Some **markdown** body.
             """);
 
-        File.WriteAllText(Path.Combine(root, "projects", "test-project.json"),
+        File.WriteAllText(Path.Combine(root, "projects", "test-project.md"),
             """
-            {
-              "slug": "test-project",
-              "name": "Test Project",
-              "summary": "Fixture project",
-              "description": "Longer description.",
-              "stack": ["dotnet", "sqlite"],
-              "repoUrl": "https://example.com/repo",
-              "featured": true,
-              "order": 1
-            }
+            ---
+            name: "Test Project"
+            summary: "Fixture project"
+            stack: [dotnet, sqlite]
+            repoUrl: "https://example.com/repo"
+            featured: true
+            order: 1
+            ---
+
+            Longer description.
             """);
 
-        File.WriteAllText(Path.Combine(root, "projects", "go-project.json"),
+        File.WriteAllText(Path.Combine(root, "projects", "go-project.md"),
             """
-            {
-              "slug": "go-project",
-              "name": "Go Project",
-              "summary": "Fixture Go project",
-              "stack": ["go"],
-              "order": 2
-            }
+            ---
+            name: "Go Project"
+            summary: "Fixture Go project"
+            stack: [go]
+            order: 2
+            ---
+
+            Fixture body.
             """);
     }
 
