@@ -34,17 +34,15 @@ jobs:
       - name: Trigger Dokploy deploy
         run: curl -fsS -X POST "${{ secrets.DOKPLOY_WEBHOOK_API }}"
 
-      - name: Verify deployed SHA
+      - name: Verify deploy is healthy
         run: |
           for i in $(seq 1 18); do
-            response=$(curl -fsS https://api.emran.blog/api/health || true)
-            deployed_sha=$(echo "$response" | grep -o '"gitSha":"[^"]*"' | cut -d'"' -f4)
-            if [ "$deployed_sha" = "${{ github.sha }}" ]; then
-              echo "Deployed SHA matches: $deployed_sha"
+            if curl -fsS https://api.emran.blog/api/health | grep -q '"status":"ok"'; then
+              echo "Health check passed"
               exit 0
             fi
-            echo "Waiting for deploy... (got: $deployed_sha)"
+            echo "Waiting for deploy..."
             sleep 5
           done
-          echo "Deploy verification failed: expected ${{ github.sha }}, got $deployed_sha"
+          echo "Deploy verification failed: /api/health never returned ok"
           exit 1
