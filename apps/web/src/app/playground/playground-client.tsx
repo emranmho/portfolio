@@ -82,10 +82,7 @@ export function PlaygroundClient() {
 
   // Expiry countdown for the demo token.
   useEffect(() => {
-    if (!token) {
-      setSecondsLeft(null);
-      return;
-    }
+    if (!token) return;
     const tick = () => {
       const left = Math.floor(
         (new Date(token.expiresAtUtc).getTime() - Date.now()) / 1000,
