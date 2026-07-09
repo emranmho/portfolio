@@ -1,30 +1,81 @@
 {
   "name": "Mohammodullah Emran",
-  "role": "Software Engineer — SRE",
-  "location": "Bangladesh",
+  "role": "Software Engineer (Site Reliability)",
+  "location": "Dhaka, Bangladesh",
   "email": "emran2300@gmail.com",
   "github": "https://github.com/emranmho",
   "linkedin": "https://www.linkedin.com/in/emranmho",
   "pdf": "https://emran.blog/resume.pdf",
-  "summary": "Backend engineer working primarily in .NET / C#, with a growing Go habit. Cares about systems that can be observed, deployed safely, and explained honestly.",
+  "summary": "Software engineer with 4+ years building production backend services in C#/.NET and React/TypeScript. Strong in REST API design, microservices, SQL Server performance tuning, and Azure cloud services — recently migrated 80k+ user identities to Okta with zero data loss.",
   "experience": [
     {
-      "role": "Backend Engineer (.NET)",
-      "company": "TODO: Company name",
-      "period": "TODO: 2024 — present",
+      "role": "Software Engineer (Site Reliability)",
+      "company": "ReliSource",
+      "period": "Sept 2024 — present",
       "highlights": [
-        "TODO: Cut SQL Server query time 40% — real query plans, before/after (see the war-story article).",
-        "TODO: One more measurable outcome. Numbers over adjectives."
+        "Design and maintain 6+ .NET Core microservices on Azure Service Bus and App Services, improving reliability by 25%.",
+        "Migrated 80k+ user identities from a legacy Sentry DB to Okta (.NET 10, Dapper, Polly) with zero data loss.",
+        "Tuned SQL Server indexing and stored procedures, cutting average query time by ~40% on high-traffic tables — see the war-story article.",
+        "Own production observability (New Relic, Application Insights, Seq), improving incident detection and triage.",
+        "Maintain Docker-based CI/CD in Azure DevOps, cutting deployment cycle from 45 to 30 minutes."
       ]
     },
     {
       "role": "Software Engineer",
-      "company": "TODO: Previous company",
-      "period": "TODO: 2021 — 2024",
+      "company": "BizzNTek Ltd.",
+      "period": "May 2023 — Sept 2024",
       "highlights": [
-        "TODO: Migrated .NET Framework → Core with 99.9% uptime — strategy, rollback plan, what broke."
+        "Developed RESTful APIs in ASP.NET Core for high-traffic web apps, improving page load times by 30%.",
+        "Built core modules of Altios, a workforce management platform serving 2,000+ users, cutting manual tasks by ~40%.",
+        "Integrated Dynamics 365 Business Central APIs for financial analytics with cross-functional teams in Agile sprints.",
+        "Led migration from legacy .NET Framework to .NET 8, cutting Azure hosting costs — see the war-story article."
+      ]
+    },
+    {
+      "role": "Software Engineer",
+      "company": "Apurba Global",
+      "period": "Apr 2022 — May 2023",
+      "highlights": [
+        "Built \"Alo-Bangla Screen Reader,\" a Windows tool that reads text aloud for visually impaired users, for the Government of Bangladesh under the ICT Ministry (C#, UI Automation, Win32 DLL).",
+        "Integrated custom IAccessible and Win32 DLL wrappers, raising accessibility compliance from 60% to 90%."
       ]
     }
   ],
-  "skills": [".NET", "C#", "ASP.NET Core", "EF Core", "SQL Server", "SQLite", "Docker", "CI/CD", "Go (learning)"]
+  "projects": [
+    {
+      "name": "LendR",
+      "stack": [".NET 10", "React 19", "TypeScript", "PostgreSQL", "SignalR", "Docker"],
+      "highlights": [
+        "Lending/borrowing tracker with dual transaction modes, built on Vertical Slice Architecture (FastEndpoints + MediatR).",
+        "Real-time SignalR notifications, pluggable multi-cloud storage (Oracle OCI / local), self-hosted VPS deployment."
+      ]
+    },
+    {
+      "name": "ClothStore",
+      "stack": [".NET 10 MVC", "PostgreSQL", "EF Core", "Docker", "OpenTelemetry", "xUnit"],
+      "highlights": [
+        "Full e-commerce platform with 4-role RBAC, dual-mode cart (guest + authenticated), and public order tracking.",
+        "Observability with Serilog + Seq + OpenTelemetry, PDF invoicing (QuestPDF), email (MailKit), xUnit tests."
+      ]
+    }
+  ],
+  "education": {
+    "school": "American International University-Bangladesh (AIUB)",
+    "location": "Dhaka, Bangladesh",
+    "degree": "Bachelor of Science, Computer Science & Engineering",
+    "gpa": "3.63",
+    "period": "2019 — 2022",
+    "certificates": [
+      "Full Stack Observability Practitioner (New Relic, Nov 2024)",
+      "SQL Intermediate (HackerRank)"
+    ]
+  },
+  "skills": [
+    "C#", ".NET 8/10", "ASP.NET Core", "Web API", "MVC", "Entity Framework Core", "LINQ", "Dapper", "SignalR", "Microservices",
+    "React", "TypeScript", "JavaScript", "HTML5", "CSS3",
+    "Azure (App Services, Functions, Service Bus, AKS)", "Oracle OCI", "Docker", "Kubernetes", "Azure DevOps", "GitHub Actions",
+    "SQL Server", "PostgreSQL", "MongoDB", "Redis",
+    "New Relic", "Application Insights", "OpenTelemetry", "Serilog", "Seq", "xUnit", "Moq",
+    "Git", "Agile/Scrum", "SOLID", "Design Patterns"
+  ]
 }

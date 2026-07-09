@@ -348,7 +348,7 @@ Architecture diagram → why SQLite over Postgres → why no Redis → why Media
 
 ### 5.2 War story articles
 
-Expand resume bullets into evidence: *"How I cut SQL Server query time 40%"* (real query plans, before/after), *"Migrating .NET Framework → Core with 99.9% uptime"* (strategy, rollback plan, what broke). Numbers + artifacts > adjectives.
+Expand resume bullets into evidence: *"How I cut SQL Server query time 40%"* (real query plans, before/after, from ReliSource), *"Migrating .NET Framework → .NET 8 with the site staying up"* (strategy, rollback plan, what broke, from BizzNTek). Numbers + artifacts > adjectives.
 
 ### 5.3 Polish checklist
 
@@ -401,7 +401,7 @@ Tests: `dotnet test` (apps/api) · `npm run lint && npm run build` (apps/web).
 - [x] **Phase 2 — Infra:** Dockerfiles → two Dokploy apps (`On Tag` trigger, domains, env, bind-mounted `/data`, health checks) → GitHub Actions tests gate a Dokploy-API-triggered deploy → `infra/dokploy.md` documented → CI badge *(done — live on VPS)*
 - [x] **Phase 3 — Frontend:** tokens + fonts → 10 components → Home → Projects (+detail) → Notes → About → old site replaced *(built — replacement goes live with Phase 2 deploy)*
 - [x] **Phase 4 — Differentiators:** `/playground` (+ JWT flow, 429 demo) → `/status` with deploy history → hero `curl` snippet *(built — ships with Phase 2 deploy)*
-- [x] **Phase 5 — Content:** "How this portfolio works" → 2 war stories *(drafted — real numbers/artifacts to fill before publish)* → RSS → OG images → Lighthouse ≥ 95 *(verify post-deploy)* → repo polish
+- [x] **Phase 5 — Content:** "How this portfolio works" → 2 war stories *(real numbers filled in from actual work history)* → RSS → OG images → Lighthouse ≥ 95 *(verify against web.emran.blog before cutover)* → repo polish
 
 **Rule:** never start a phase before the previous one is deployed.
 

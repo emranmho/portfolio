@@ -64,7 +64,7 @@ export default function AboutPage() {
         <div className="mt-6">
           <a
             href="/resume.pdf"
-            download="emran-resume.pdf"
+            download="Mohammodullah_Emran_Resume.pdf"
             className="inline-flex items-center gap-2 rounded border border-transparent bg-accent px-4 py-2 font-mono text-sm font-semibold text-bg transition-colors hover:opacity-90"
           >
             resume ↓

@@ -14,26 +14,28 @@ export function TerminalWindow({
   output: string;
   title?: string;
 }) {
-  const [typedCommand, setTypedCommand] = useState("");
-  const [showOutput, setShowOutput] = useState(false);
+  // The output is real data, already fetched server-side — it renders
+  // immediately so it counts as real content (LCP, crawlers, no fake
+  // loading state). Only the command echo above it is cosmetically typed.
+  const [typedCommand, setTypedCommand] = useState(command);
+  const [typing, setTyping] = useState(false);
   const reduced = useRef(false);
 
   useEffect(() => {
     reduced.current = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
-    if (reduced.current) {
-      setTypedCommand(command);
-      setShowOutput(true);
-      return;
-    }
+    if (reduced.current) return;
+
+    setTypedCommand("");
+    setTyping(true);
     let i = 0;
     const timer = setInterval(() => {
       i += 1;
       setTypedCommand(command.slice(0, i));
       if (i >= command.length) {
         clearInterval(timer);
-        setTimeout(() => setShowOutput(true), 250);
+        setTyping(false);
       }
     }, 35);
     return () => clearInterval(timer);
@@ -51,17 +53,13 @@ export function TerminalWindow({
         <div>
           <span className="text-accent">$ </span>
           <span>{typedCommand}</span>
-          {!showOutput && <span className="cursor-blink text-accent">▊</span>}
+          {typing && <span className="cursor-blink text-accent">▊</span>}
         </div>
-        {showOutput && (
-          <>
-            <pre className="mt-2 whitespace-pre text-text-dim">{output}</pre>
-            <div className="mt-2">
-              <span className="text-accent">$ </span>
-              <span className="cursor-blink text-accent">▊</span>
-            </div>
-          </>
-        )}
+        <pre className="mt-2 whitespace-pre text-text-dim">{output}</pre>
+        <div className="mt-2">
+          <span className="text-accent">$ </span>
+          {!typing && <span className="cursor-blink text-accent">▊</span>}
+        </div>
       </div>
     </div>
   );
