@@ -38,7 +38,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Trigger Dokploy deploy
-        run: curl -fsS -X POST "${{ secrets.DOKPLOY_WEBHOOK_WEB }}"
+        run: |
+          curl -fsS -X POST "https://${{ secrets.DOKPLOY_API_URL }}/api/application.deploy" \
+            -H "Content-Type: application/json" \
+            -H "x-api-key: ${{ secrets.DOKPLOY_API_TOKEN }}" \
+            -d "{\"applicationId\": \"${{ secrets.DOKPLOY_APP_ID_WEB }}\"}"
 
       - name: Verify site is up
         run: |

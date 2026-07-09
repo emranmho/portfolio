@@ -32,7 +32,7 @@ RUN mkdir -p /data && chown -R app:app /app /data
 USER app
 
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
     CMD wget -qO- http://localhost:8080/api/health || exit 1
 
 ENTRYPOINT ["dotnet", "Portfolio.Api.dll"]
