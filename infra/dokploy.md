@@ -52,7 +52,7 @@ API_BASE_URL=http://<portfolio-api container name on the Dokploy network>:8080
 In each Dokploy app: Settings → Webhooks → generate a deploy webhook URL. Store them as
 GitHub repo secrets:
 
-- `DOKPLOY_WEBHOOK_API` → portfolio-api's webhook URL
+- `DOKPLOY_WEBHOOK_API` → portfolio-api's webhook URL done
 - `DOKPLOY_WEBHOOK_WEB` → portfolio-web's webhook URL
 
 `JWT_DEMO_KEY` lives only in Dokploy's env config, never in GitHub.
