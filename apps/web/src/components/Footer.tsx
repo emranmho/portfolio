@@ -22,6 +22,18 @@ export function Footer() {
             source
           </a>
           <a
+            href="https://github.com/emranmho/portfolio/actions/workflows/api.yml"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-accent"
+          >
+            <img
+              src="https://github.com/emranmho/portfolio/actions/workflows/api.yml/badge.svg"
+              alt="api CI status"
+              className="h-4"
+            />
+          </a>
+          <a
             href={`${api.baseUrl}/docs`}
             target="_blank"
             rel="noopener noreferrer"

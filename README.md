@@ -4,6 +4,8 @@
 
 **Live:** https://emran.blog · **API:** https://api.emran.blog/docs
 
+[![api](https://github.com/emranmho/portfolio/actions/workflows/api.yml/badge.svg)](https://github.com/emranmho/portfolio/actions/workflows/api.yml) [![web](https://github.com/emranmho/portfolio/actions/workflows/web.yml/badge.svg)](https://github.com/emranmho/portfolio/actions/workflows/web.yml)
+
 ---
 
 ## Table of contents

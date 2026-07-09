@@ -41,12 +41,14 @@ jobs:
       - name: Verify deploy is healthy
         run: |
           for i in $(seq 1 18); do
-            if curl -fsS https://api.emran.blog/api/health | grep -q '"status":"ok"'; then
-              echo "Health check passed"
+            resp="$(curl -fsS https://api.emran.blog/api/health || true)"
+            sha="$(echo "$resp" | jq -r '.gitSha // empty')"
+            if echo "$resp" | grep -q '"status":"ok"' && [ "$sha" = "${{ github.sha }}" ]; then
+              echo "Health check passed, gitSha matches ${{ github.sha }}"
               exit 0
             fi
-            echo "Waiting for deploy..."
+            echo "Waiting for deploy... (got sha: ${sha:-none})"
             sleep 5
           done
-          echo "Deploy verification failed: /api/health never returned ok"
+          echo "Deploy verification failed: /api/health never returned ok with matching gitSha"
           exit 1
