@@ -29,7 +29,7 @@ export default async function HomePage() {
             Mohammodullah Emran
           </h1>
           <p className="mt-1 font-mono text-lg text-text-dim">
-            Software Engineer — SRE
+            Software Engineer — (SRE)
           </p>
           <p className="mt-4 max-w-md leading-relaxed text-text-dim">
             I build observable, honestly-documented backend systems. The

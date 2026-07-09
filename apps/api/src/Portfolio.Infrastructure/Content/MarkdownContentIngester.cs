@@ -80,7 +80,7 @@ public sealed class MarkdownContentIngester(
             {
                 var json = await File.ReadAllTextAsync(file, ct);
                 var model = JsonSerializer.Deserialize<ProjectFile>(json, JsonOptions)
-                    ?? throw new InvalidDataException($"Empty project definitions: {file}");
+                    ?? throw new InvalidDataException($"Empty project definition: {file}");
 
                 var slug = Slug.Create(model.Slug ?? Path.GetFileNameWithoutExtension(file)).Value;
 
