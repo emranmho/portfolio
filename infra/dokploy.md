@@ -84,9 +84,9 @@ to determine the branch, which a bare CI curl can't supply, so it fails with
 Setup:
 
 1. Dokploy → profile/settings → API/CLI section → generate an API token.
-2. Get each app's `applicationId`: `curl -s https://vps.emran.blog/api/project.all -H "x-api-key: <token>" | jq`.
+2. Get each app's `applicationId`: `curl -s https://<dokploy-panel-domain>/api/project.all -H "x-api-key: <token>" | jq`.
 3. GitHub repo secrets:
-   - `DOKPLOY_API_URL` → `vps.emran.blog` (panel domain, no `https://`)
+   - `DOKPLOY_API_URL` → `<dokploy-panel-domain>` (panel domain, no `https://`)
    - `DOKPLOY_API_TOKEN` → the token from step 1
    - `DOKPLOY_APP_ID_API` → portfolio-api's `applicationId`
    - `DOKPLOY_APP_ID_WEB` → portfolio-web's `applicationId`
