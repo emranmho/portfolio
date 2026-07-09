@@ -1,0 +1,54 @@
+name: web
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/web/**"
+      - ".github/workflows/web.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+          cache: "npm"
+          cache-dependency-path: apps/web/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+        env:
+          NEXT_PUBLIC_API_URL: https://api.emran.blog
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Dokploy deploy
+        run: curl -fsS -X POST "${{ secrets.DOKPLOY_WEBHOOK_WEB }}"
+
+      - name: Verify site is up
+        run: |
+          for i in $(seq 1 18); do
+            if curl -fsS -o /dev/null https://emran.blog/; then
+              echo "Site is up"
+              exit 0
+            fi
+            echo "Waiting for deploy..."
+            sleep 5
+          done
+          echo "Deploy verification failed: site did not become reachable"
+          exit 1

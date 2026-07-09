@@ -1,0 +1,39 @@
+# Local, production-shaped run only. Production is managed by Dokploy — this
+# file exists so the two Dockerfiles can be exercised together without it.
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: apps/api/Dockerfile
+      args:
+        GIT_SHA: local
+    ports:
+      - "8080:8080"
+    environment:
+      ConnectionStrings__Db: "Data Source=/data/portfolio.db"
+      JWT_DEMO_KEY: local-dev-demo-signing-key-not-a-secret-0123456789
+      Cors__AllowedOrigins__0: http://localhost:3000
+    volumes:
+      - api-data:/data
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/api/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+  web:
+    build:
+      context: ../apps/web
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:8080
+    ports:
+      - "3000:3000"
+    environment:
+      API_BASE_URL: http://api:8080
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  api-data:

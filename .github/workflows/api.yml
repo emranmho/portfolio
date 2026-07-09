@@ -1,0 +1,50 @@
+name: api
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/api/**"
+      - "content/**"
+      - ".github/workflows/api.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: dotnet restore apps/api/Portfolio.slnx
+
+      - name: Build
+        run: dotnet build apps/api/Portfolio.slnx --no-restore -c Release
+
+      - name: Test
+        run: dotnet test apps/api/Portfolio.slnx --no-build -c Release
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Dokploy deploy
+        run: curl -fsS -X POST "${{ secrets.DOKPLOY_WEBHOOK_API }}"
+
+      - name: Verify deployed SHA
+        run: |
+          for i in $(seq 1 18); do
+            response=$(curl -fsS https://api.emran.blog/api/health || true)
+            deployed_sha=$(echo "$response" | grep -o '"gitSha":"[^"]*"' | cut -d'"' -f4)
+            if [ "$deployed_sha" = "${{ github.sha }}" ]; then
+              echo "Deployed SHA matches: $deployed_sha"
+              exit 0
+            fi
+            echo "Waiting for deploy... (got: $deployed_sha)"
+            sleep 5
+          done
+          echo "Deploy verification failed: expected ${{ github.sha }}, got $deployed_sha"
+          exit 1
