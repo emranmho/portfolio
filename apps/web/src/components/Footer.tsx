@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { api } from "@/lib/api";
 
 export function Footer() {
@@ -27,10 +28,13 @@ export function Footer() {
             rel="noopener noreferrer"
             className="hover:text-accent"
           >
-            <img
+            <Image
               src="https://github.com/emranmho/portfolio/actions/workflows/api.yml/badge.svg"
               alt="api CI status"
-              className="h-4"
+              width={90}
+              height={20}
+              unoptimized
+              className="h-4 w-auto"
             />
           </a>
           <a
