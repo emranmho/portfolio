@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { api } from "@/lib/api";
-import { CommandPaletteTrigger } from "@/components/CommandPaletteTrigger";
+import { NavMenu } from "@/components/NavMenu";
 
 const links = [
   { href: "/projects", label: "projects" },
@@ -22,25 +22,8 @@ export async function Nav() {
         <Link href="/" className="font-semibold text-text hover:text-accent">
           emran<span className="text-accent">.blog</span>
         </Link>
-        <div className="ml-auto flex items-center gap-5">
-          {links.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              className="text-text-dim transition-colors hover:text-accent"
-            >
-              {l.label}
-            </Link>
-          ))}
-          <a
-            href={`${api.baseUrl}/docs`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-text-dim transition-colors hover:text-accent"
-          >
-            /docs
-          </a>
-          <CommandPaletteTrigger />
+        <div className="ml-auto flex items-center gap-4">
+          <NavMenu links={links} docsUrl={`${api.baseUrl}/docs`} />
           <span
             className="flex items-center gap-1.5 text-xs"
             title={up ? `API up · ${health?.gitSha}` : "API unreachable"}

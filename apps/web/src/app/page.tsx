@@ -22,10 +22,10 @@ export default async function HomePage() {
   return (
     <div className="py-12">
       {/* Terminal hero — a real API payload typed out, not decoration */}
-      <section className="grid items-start gap-10 lg:grid-cols-[1fr_1.1fr]">
-        <div className="pt-2">
+      <section className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[1fr_1.1fr]">
+        <div className="min-w-0 pt-2">
           <p className="font-mono text-sm text-accent">$ whoami</p>
-          <h1 className="mt-2 font-mono text-4xl font-semibold leading-tight">
+          <h1 className="mt-2 font-mono text-3xl font-semibold leading-tight sm:text-4xl">
             Mohammodullah Emran
           </h1>
           <p className="mt-1 font-mono text-lg text-text-dim">
@@ -56,7 +56,7 @@ export default async function HomePage() {
             </Button>
           </div>
         </div>
-        <div>
+        <div className="min-w-0">
           <TerminalWindow
             command="curl https://api.emran.blog/api/whoami"
             output={
