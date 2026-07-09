@@ -1,5 +1,6 @@
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Portfolio.Api.Auth;
 using Portfolio.Api.Endpoints;
 using Portfolio.Api.Live;
@@ -102,6 +103,19 @@ builder.Services.AddCors(o => o.AddDefaultPolicy(p =>
 var app = builder.Build();
 
 // --- Pipeline
+// Traefik terminates TLS and forwards plain HTTP; without this, the app thinks
+// every request is http, which leaks into the OpenAPI server URL and breaks
+// Scalar's "Try it" (https page fetching an http URL = blocked as mixed content).
+// Traefik reaches the app over the Docker network, not loopback, so the default
+// trusted-proxy list (loopback only) must be cleared to accept its headers.
+var forwardedHeadersOptions = new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
+};
+forwardedHeadersOptions.KnownIPNetworks.Clear();
+forwardedHeadersOptions.KnownProxies.Clear();
+app.UseForwardedHeaders(forwardedHeadersOptions);
+
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 
