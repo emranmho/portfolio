@@ -8,27 +8,37 @@ export const metadata: Metadata = {
   description: "Backend engineer. The site is the proof, not the claim.",
 };
 
-// ── EDIT ME: real work history goes here ─────────────────────────────
-// Placeholder entries below are drawn from the README's war-story hints.
-// Replace company/period/points with the facts from your resume.
 const experience = [
   {
-    role: "Backend Engineer (.NET)",
-    company: "TODO: Company name",
-    period: "TODO: 2024 — present",
-    stack: ["dotnet", "csharp", "sqlserver", "efcore"],
+    role: "Software Engineer (Site Reliability)",
+    company: "ReliSource",
+    period: "Sept 2024 — present",
+    stack: ["dotnet", "csharp", "azure", "sqlserver", "dapper"],
     points: [
-      "TODO: Cut SQL Server query time 40% — real query plans, before/after (see the war-story article).",
-      "TODO: One more measurable outcome. Numbers over adjectives.",
+      "Design and maintain 6+ .NET Core microservices on Azure Service Bus and App Services, improving reliability by 25%.",
+      "Migrated 80k+ user identities from a legacy Sentry DB to Okta (Dapper, Polly) with zero data loss.",
+      "Tuned SQL Server indexing and stored procedures, cutting average query time ~40% on high-traffic tables — see the war-story article.",
     ],
   },
   {
     role: "Software Engineer",
-    company: "TODO: Previous company",
-    period: "TODO: 2021 — 2024",
-    stack: ["dotnet", "aspnet"],
+    company: "BizzNTek Ltd.",
+    period: "May 2023 — Sept 2024",
+    stack: ["dotnet", "aspnet", "dynamics365"],
     points: [
-      "TODO: Migrated .NET Framework → Core with 99.9% uptime — strategy, rollback plan, what broke.",
+      "Developed RESTful APIs in ASP.NET Core for high-traffic web apps, improving page load times by 30%.",
+      "Built core modules of Altios, a workforce platform serving 2,000+ users, cutting manual tasks ~40%.",
+      "Led migration from legacy .NET Framework to .NET 8 — see the war-story article.",
+    ],
+  },
+  {
+    role: "Software Engineer",
+    company: "Apurba Global",
+    period: "Apr 2022 — May 2023",
+    stack: ["csharp", "win32"],
+    points: [
+      "Built the \"Alo-Bangla Screen Reader\" for the Government of Bangladesh's ICT Ministry — reads text aloud for visually impaired users (UI Automation, Win32 DLL).",
+      "Integrated custom IAccessible and Win32 DLL wrappers, raising accessibility compliance from 60% to 90%.",
     ],
   },
 ];
