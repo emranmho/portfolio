@@ -22,8 +22,7 @@ ENV GIT_SHA=${GIT_SHA} \
     Content__Root=/content \
     ConnectionStrings__Db="Data Source=/data/portfolio.db"
 
-RUN addgroup -S app && adduser -S app -G app \
-    && apk add --no-cache wget
+RUN apk add --no-cache wget
 
 WORKDIR /app
 COPY --from=build /app ./
