@@ -60,7 +60,7 @@ Three rules drive every decision in this repo:
                                    │ (volume)│ │ (in repo)    │
                                    └─────────┘ └──────────────┘
 
-  git push ─▶ GitHub Actions (tests gate) ─▶ Dokploy (build + deploy on VPS)
+  git push ─▶ GitHub Actions (tests gate) ─▶ Dokploy API (build + deploy on VPS)
                                                  │
                                                  └─ health check → no traffic to a broken container
 ```
@@ -214,7 +214,7 @@ Built-in `RateLimiter` middleware: fixed window, e.g. **20 req/min per IP** on `
 
 ### 2.1 Dockerfiles (Dokploy builds these)
 
-- **API** — multi-stage: `sdk:10.0` build/publish (`-c Release`), runtime `aspnet:10.0-alpine` (or the chiseled variant), **non-root user**, `HEALTHCHECK CMD wget -qO- http://localhost:8080/api/health || exit 1`. `content/` is **copied into the image** at build — content changes are immutable deployments, not files mutated on a server. Accepts a `GIT_SHA` build arg exposed via `/api/health`.
+- **API** — multi-stage: `sdk:10.0` build/publish (`-c Release`), runtime `aspnet:10.0-alpine` (base image already ships a non-root `app` user — don't re-create it, `addgroup: group 'app' in use` build failure if you try), `HEALTHCHECK CMD wget -qO- http://localhost:8080/api/health || exit 1`. `content/` is **copied into the image** at build — content changes are immutable deployments, not files mutated on a server. Accepts a `GIT_SHA` build arg exposed via `/api/health` (left as the literal `dev` placeholder for now — see 2.3). Runtime env also needs `DOTNET_EnableWriteXorExecute=0`: without it the container exits instantly with code `139` (SIGSEGV, zero logs) on this VPS's kernel/hypervisor, which doesn't get along with .NET's W^X JIT pages.
 - **Web** — Next.js `output: "standalone"`, multi-stage `node:lts-alpine`, non-root, final image ≈ 150 MB.
 
 ### 2.2 Dokploy application setup (two apps, one monorepo)
@@ -222,29 +222,39 @@ Built-in `RateLimiter` middleware: fixed window, e.g. **20 req/min per IP** on `
 | Setting | `portfolio-api` app | `portfolio-web` app |
 |---|---|---|
 | Source | GitHub repo, branch `main` | same repo, branch `main` |
-| Build | Dockerfile at `apps/api/Dockerfile`, context = repo root (so `content/` is in scope) | Dockerfile at `apps/web/Dockerfile`, context = `apps/web` |
-| Build args | `GIT_SHA=${COMMIT_SHA}` | — |
+| Trigger type | **`On Tag`**, not `On Push` | **`On Tag`** |
+| Build | Dockerfile at `apps/api/Dockerfile`, context = **repo root** (`content/` must be in scope — `apps/api` as context gives `COPY ... not found`) | Dockerfile at `apps/web/Dockerfile`, context = `apps/web` |
+| Build-time arguments | `GIT_SHA=dev` | `NEXT_PUBLIC_API_URL=https://api.emran.blog` (inlined into the client bundle — set as a runtime env var instead and the browser gets `undefined`) |
 | Domain | `api.emran.blog` → container port `8080` | `emran.blog` → container port `3000` |
 | HTTPS | Let's Encrypt via Traefik (automatic) | same |
-| Env vars | `ConnectionStrings__Db=Data Source=/data/portfolio.db`, `JWT_DEMO_KEY=<secret>` | `API_BASE_URL=http://<api-container>:8080` (internal Docker network name from Dokploy) |
-| Volume | `/data` → persistent volume (SQLite + metrics history survive deploys) | — |
+| Env vars (runtime) | `ConnectionStrings__Db`, `Content__Root`, `Jwt__Issuer`/`Jwt__Audience`, `JWT_DEMO_KEY`, `RateLimiting__*`, `Cors__AllowedOrigins__0`, `DOTNET_EnableWriteXorExecute=0` | `API_BASE_URL=https://api.emran.blog` (server-side only — SSR/route handlers/`proxy.ts`) |
+| Storage | **Bind mount** `/opt/data/portfolio-api` (host) → `/data` (container) — not a Dokploy volume, needs a fixed host path for the backup cron | — |
 | Health check | `/api/health` — no traffic routed until healthy | `/` |
 
-Traefik (bundled with Dokploy) is the single public entry point: it terminates TLS on 443 and routes by domain to the app containers, which expose no public ports. Document the exact settings in `infra/dokploy.md` so the setup is reproducible.
+Dokploy's Trigger Type dropdown only offers `On Push`/`On Tag`, no true manual option — `On Tag` is the de-facto off-switch, since CI never pushes tags. Deploys are meant to happen only via the CI job in 2.3.
 
-**Backup:** nightly cron on the VPS copying the SQLite file off-box (it's one file — that's the point).
+**Bind mount gotcha:** the container runs as non-root `app` (UID **1654** in the `aspnet:10.0-alpine` image — check with `docker run --rm mcr.microsoft.com/dotnet/aspnet:10.0-alpine id app`). A fresh `mkdir`'d bind-mount host directory is root-owned, which overrides the image's own `/data` ownership and produces `SQLite Error 14: unable to open database file`. Fix: `chown -R 1654:1654 /opt/data/portfolio-api` before first deploy.
 
-### 2.3 CI: tests gate the deploy (GitHub Actions + Dokploy webhook)
+Traefik (bundled with Dokploy) is the single public entry point: it terminates TLS on 443 and routes by domain to the app containers, which expose no public ports. No `UseForwardedHeaders` middleware meant the API didn't trust `X-Forwarded-Proto` from Traefik, so it thought every request was `http` — leaked into the OpenAPI spec's server URL and got blocked as mixed content on `/docs`. Fixed with `app.UseForwardedHeaders(...)` in `Program.cs`, `KnownIPNetworks`/`KnownProxies` cleared since Traefik reaches the app over the Docker network, not loopback.
 
-Dokploy handles build + deploy, but nothing should reach production untested. Keep a slim workflow per app, path-filtered:
+Full settings documented in `infra/dokploy.md` for reproducibility.
 
-`api.yml` — on push to `main` touching `apps/api/**` or `content/**`:
+**Backup:** nightly cron on the VPS copying `/data/portfolio.db` off-box (it's one file — that's the point).
 
-1. **Test** — `dotnet test` (unit + integration). Fail = stop, nothing deploys.
-2. **Trigger deploy** — on success, call the Dokploy deployment webhook/API for `portfolio-api` (disable Dokploy's own auto-deploy-on-push so CI is the only trigger).
-3. **Verify** — curl `https://api.emran.blog/api/health` (retry over ~90s) and assert the returned `gitSha` matches `${{ github.sha }}`. Mismatch or timeout → red build. Dokploy's health check has already kept traffic off a broken container; rollback = redeploy the previous good commit from the Dokploy UI (or a webhook call pinned to that SHA).
+### 2.3 CI: tests gate the deploy (GitHub Actions + Dokploy API)
 
-`web.yml` mirrors this (`npm run lint && npm run build` as the gate). **Repo secrets:** `DOKPLOY_WEBHOOK_API`, `DOKPLOY_WEBHOOK_WEB`, and `JWT_DEMO_KEY` lives in Dokploy env config, not in GitHub. CI badge goes in this README and the site footer.
+`api.yml`, path-filtered on `apps/api/**` and `content/**`:
+
+1. **Test job** — `dotnet restore/build/test` on `Portfolio.slnx`. Red build = nothing deploys.
+2. **Deploy job** (`needs: test`) — `POST /api/application.deploy` on Dokploy's API (`x-api-key` header, `applicationId` in body), then polls `/api/health` for `"status":"ok"`.
+
+Deploy trigger went through two approaches: Dokploy's Webhooks-tab URL failed with `{"message":"Branch Not Match"}` — that endpoint expects a GitHub-shaped push payload (`ref: refs/heads/main`) to detect the branch, which a bare CI `curl POST` with no body can't supply. Switched to the direct API call (`applicationId` targets the app, no branch guessing needed) — that works.
+
+Deploy verification originally tried to match the deployed `gitSha` (from `/api/health`) against the CI commit SHA. Dropped: Dokploy's Build-time Arguments are static per-app config, not passable dynamically through the deploy API call, so `GIT_SHA` can't be wired to the real commit per deploy without an extra API call to patch app config first. Settled for a plain `"status":"ok"` health check.
+
+`web.yml` mirrors this (`npm run lint && npm run build` as the gate, `NEXT_PUBLIC_API_URL` set for the build so it validates against the real URL), reusing the same Dokploy API deploy call with a different `applicationId`, then polling `https://emran.blog/`.
+
+**Repo secrets:** `DOKPLOY_API_URL` (panel domain, no scheme), `DOKPLOY_API_TOKEN` (from Dokploy profile → API/CLI settings), `DOKPLOY_APP_ID_API`, `DOKPLOY_APP_ID_WEB` (app IDs from `GET /api/project.all`). `JWT_DEMO_KEY` lives in Dokploy env config, not in GitHub. CI badge in this README and the site footer.
 
 ### 2.4 What Dokploy replaces vs. what stays yours
 
@@ -252,8 +262,8 @@ Dokploy handles build + deploy, but nothing should reach production untested. Ke
 |---|---|---|
 | Reverse proxy, TLS certs, domain routing | Dokploy (Traefik) | Same role Caddy/Nginx would play — worth being able to explain (see the flagship article) |
 | Image builds, deploys, restarts, volumes, env | Dokploy | The plumbing |
-| Tests as a deploy gate | **You** (GitHub Actions) | The engineering — a PaaS won't stop a broken commit |
-| Health endpoint + SHA verification | **You** (API + workflow) | Powers the status page's deploy history too |
+| Tests as a deploy gate | **You** (GitHub Actions) | A PaaS won't stop a broken commit; CI calls Dokploy's API only after tests pass |
+| Health endpoint + deploy history | **You** (API) | Powers the status page's deploy history too |
 | Dockerfiles, non-root images, healthchecks | **You** | Portable to any platform if Dokploy ever goes away |
 
 ---
@@ -388,7 +398,7 @@ Tests: `dotnet test` (apps/api) · `npm run lint && npm run build` (apps/web).
 
 - [x] **Phase 0 — Decisions:** design tokens locked, 6 pages sketched, API contract written *(done — this README)*
 - [x] **Phase 1 — Backend:** solution scaffolded → domain + ingestion → endpoints → metrics middleware → JWT demo + rate limiter → tests → `/docs`
-- [ ] **Phase 2 — Infra:** Dockerfiles → two Dokploy apps (domains, env, `/data` volume, health checks) → tests-gate-deploy Actions workflows + SHA verification → `infra/dokploy.md` documented → CI badge
+- [x] **Phase 2 — Infra:** Dockerfiles → two Dokploy apps (`On Tag` trigger, domains, env, bind-mounted `/data`, health checks) → GitHub Actions tests gate a Dokploy-API-triggered deploy → `infra/dokploy.md` documented → CI badge *(done — live on VPS)*
 - [x] **Phase 3 — Frontend:** tokens + fonts → 10 components → Home → Projects (+detail) → Notes → About → old site replaced *(built — replacement goes live with Phase 2 deploy)*
 - [x] **Phase 4 — Differentiators:** `/playground` (+ JWT flow, 429 demo) → `/status` with deploy history → hero `curl` snippet *(built — ships with Phase 2 deploy)*
 - [x] **Phase 5 — Content:** "How this portfolio works" → 2 war stories *(drafted — real numbers/artifacts to fill before publish)* → RSS → OG images → Lighthouse ≥ 95 *(verify post-deploy)* → repo polish
